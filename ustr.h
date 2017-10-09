@@ -233,5 +233,6 @@ inline ustr::operator ucstr() { return ucstr(operator const char*()); }
 
 ustr_t	ustrlen	(ucstr str);
 ustr	ustrcpy	(ustr d, ucstr s);
+ustr_t	ustrcmp	(ucstr s1, ucstr s2);
 
 #endif // __USTR_H
