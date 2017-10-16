@@ -11,7 +11,7 @@ typedef uint16_t ustr_t;
 
 #elif __AVR_ATmega328P__
 #include <avr/pgmspace.h>
-#define USTR_RAM_SIZE 2048
+#define USTR_RAM_SIZE 0x1000	// data/heap<0x800 stack<0x900
 #define USTR_EE_SIZE 1024
 #define USTR_ROM_SIZE 32768
 typedef uint16_t ustr_t;
