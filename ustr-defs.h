@@ -37,7 +37,9 @@ typedef unsigned long ustr_t;		// pointer always fit in a long
 
 #else
 
+#if !__x86_64__
 #warning ustr: generic arch, should be personalized
+#endif
 typedef unsigned long ustr_t;		// pointer always fit in a long
 #endif
 
