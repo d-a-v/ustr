@@ -31,6 +31,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef __USTR_H
 #define __USTR_H
 
+#ifdef __cplusplus
+
 #include <ustr-defs.h>
 
 // mapping of ustr::c_off:
@@ -234,5 +236,17 @@ inline ustr::operator ucstr() { return ucstr(operator const char*()); }
 ustr_t	ustrlen	(ucstr str);
 ustr	ustrcpy	(ustr d, ucstr s);
 ustr_t	ustrcmp	(ucstr s1, ucstr s2);
+
+#else // !__cplusplus
+
+typedef char* ustr;
+typedef const char* ucstr;
+typedef long ustr_t;
+
+#define ustrlen strlen
+#define ustrcpy strcpy
+#define ustrcmp strcmp
+
+#endif // !__cplusplus
 
 #endif // __USTR_H
