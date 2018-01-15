@@ -31,9 +31,9 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef __USTR_H
 #define __USTR_H
 
-#ifdef __cplusplus
-
 #include <ustr-defs.h>
+
+#ifdef __cplusplus
 
 // mapping of ustr::c_off:
 // RAM(RW):	0..RAM-1	offset in ram = real ram offset
@@ -241,7 +241,6 @@ ustr_t	ustrcmp	(ucstr s1, ucstr s2);
 
 typedef char* ustr;
 typedef const char* ucstr;
-typedef long ustr_t;
 
 #define ustrlen strlen
 #define ustrcpy strcpy
