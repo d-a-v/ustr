@@ -19,11 +19,8 @@ void setup ()
   
   // initialize eeprom
   EEPROM.begin();
-  if (EEPROM.read(USTR_EE_SIZE - 1) != 0)
-  {
-    EEPROM.update(USTR_EE_SIZE - 2, '!');
-    EEPROM.update(USTR_EE_SIZE - 1, 0);
-  }
+  EEPROM.put(USTR_EE_SIZE - 2, '!');
+  EEPROM.put(USTR_EE_SIZE - 1, 0);
 
   Serial.println("I am always modified the same way:");
   modify_first_char_and_display(ustr::ptr(in_ram));
