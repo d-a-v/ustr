@@ -2,38 +2,49 @@
 #ifndef __USTRDEFS_H
 #define __USTRDEFS_H
 
-#if defined(ARDUINO_AVR_DIGISPARK)
+#if __AVR_ATmega168__ || __AVR_ATmega328P__ || defined(ARDUINO_AVR_DIGISPARK)
 #include <avr/pgmspace.h>
-#define USTR_RAM_SIZE 512
-#define USTR_EE_SIZE 512
-#define USTR_ROM_SIZE 8192
-typedef uint16_t ustr_t;
-
-#elif __AVR_ATmega328P__
-#include <avr/pgmspace.h>
-#define USTR_RAM_SIZE 0x1000	// data/heap<0x800 stack<0x900
-#define USTR_EE_SIZE 1024
-#define USTR_ROM_SIZE 32768
-typedef uint16_t ustr_t;
-
-#elif __AVR_ATmega168__
-#include <avr/pgmspace.h>
-#define USTR_RAM_SIZE 1024
-#define USTR_EE_SIZE 512
-#define USTR_ROM_SIZE 16384
+// ram and flash addresses cast to uint32 overlap so macro below are mandatory
+// mapping:
+// ram (max 0x1000=4096) | flash (max 0xE000=57344) | eeprom (max 0x1000=4096)
+// 0x0000         0x0fff | 0x1000            0xefff | 0xf000            0xffff
+// XXX is optimizable (bitmask?)
+#define RAM2USTR(x)		ustr(x)
+#define USTR2RAM(x)		(x)
+#define USTR_IS_RAM		((x) < 0x1000)
+#define FLASH2USTR(x)		ustr((x) + 0x1000)
+#define USTR2FLASH(x)		((x) - 0x1000)
+#define USTR_IS_FLASH(x)	((x) >= 0x1000 && (x) < 0xf000)
+#define EE2USTR(x)		ustr((x) + 0xf000)
+#define USTR2EE(x)		((x) - 0xf000)
+#define USTR_IS_EE(x)		((x) >= 0xf000)
 typedef uint16_t ustr_t;
 
 #elif ESP8266
 #include <pgmspace.h>
-#define USTR_EE_SIZE 4096		// should be enough
-#define USTR_ROM_SIZE (32*1024*1024)	// 32MB flash at most
-#define USTR_RAM_SIZE 0x80000000	// > ram mapping
+// ram and flash addresses cast to uint32 do not overlap
+// mapping: https://github.com/esp8266/esp8266-wiki/wiki/Memory-Map
+// only eeprom has to be shifted
+// XXX is optimizable (0x4000000? bitmask?)
+#define RAM2USTR(x)		ustr(x)
+#define USTR2RAM(x)		(x)
+#define USTR_IS_RAM		((x) < 0x40200000)
+#define FLASH2USTR(x)		ustr(x)
+#define USTR2FLASH(x)		(x)
+#define USTR_IS_FLASH(x)	((x) >= 0x40200000 && (x) < 0xf0000000)
+#define EE2USTR(x)		ustr((x) + 0xf0000000)
+#define USTR2EE(x)		((x) - 0xf0000000)
+#define USTR_IS_EE(x)		((x) >= 0xf0000000)
 typedef uint32_t ustr_t;
 
 #elif ARDUINO_EMU
-#define USTR_EE_SIZE 1024
-#define USTR_RAM_SIZE (MAXUSCALAR(typeof(ustr_t)) - USTR_EE_SIZE)
-typedef unsigned long ustr_t;		// pointer always fit in a long
+#define RAM2USTR(x)		ustr(x)
+#define USTR2RAM(x)		(x)
+#define USTR_IS_RAM		((x) < 0xf0000000)
+#define EE2USTR(x)		ustr((x) + MAXSSCALAR(ustr_t))
+#define USTR2EE(x)		((x) - MAXSSCALAR(ustr_t))
+#define USTR_IS_EE(x)		((x) >= MAXSSCALAR(ustr_t))
+typedef unsigned long ustr_t;	// pointer always fit in a long
 
 #else
 
