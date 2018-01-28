@@ -42,17 +42,18 @@ POSSIBILITY OF SUCH DAMAGE.
 #define _UEE(x...)		x
 #endif
 
-#ifndef USTR_IS_FLASH
+#ifndef USTR_IS_ROM
 #define _UROM(x...)
-#define USTR(x)			((char*)(x))
+#define ROM2USTR(x)		ustr(x)
+#define USTR2ROM(x)		(x)
+#define USTR_IS_ROM(x)		(0)
 #define STATICUSTR2(var,str)	static const char var [] = str
-#define STATICUSTR(val)		STATICUSTR2(__ ## val, #val)
 #else
 #define _UROM(x...)		x
-#define USTR(x)			(FLASH2USTR(PSTR(x))) // PSTR() is arduino's
-#define STATICUSTR2(var,str)	static const char ustrom_##var [] PROGMEM = str; static const char* var = FLASH2USTR(ustrom_##var)
-#define STATICUSTR(val)		STATICUSTR2(__ ##val, #val)
+#define STATICUSTR2(var,str)	static const char ustrom_##var [] PROGMEM = str; static const char* var = ROM2USTR(ustrom_##var)
 #endif
+
+#define STATICUSTR(val)		STATICUSTR2(__ ##val, #val)
 
 #ifndef ESP8266
 #define _UESP8266(x...)
@@ -76,21 +77,22 @@ protected:
 	
 public:
 
+#if 0
 	static void commit ()
 	{
 		_UEE(_UESP8266(EEPROM.commit();))
 	}
-	
+#endif
 	enum type_e
 	{
 		e_str = 0,
-	_UEE(	e_eeprom, )
-	_UROM(	e_flash, )
+		e_eeprom,
+		e_flash,
 	};
 
 	type_e type () const
 	{
-	_UROM(	if (USTR_IS_FLASH(c_off)) return e_flash; )
+	_UROM(	if (USTR_IS_ROM(c_off)) return e_flash; )
 	_UEE(	if (USTR_IS_EE(c_off)) return e_eeprom; )
 		return e_str;
 	}
@@ -109,7 +111,7 @@ public:
 	{
 		switch (type())
 		{
-	_UROM(	case e_flash:	return pgm_read_byte((const void*)USTR2FLASH(c_off)); )
+	_UROM(	case e_flash:	return pgm_read_byte((const void*)USTR2ROM(c_off)); )
 	_UEE(	case e_eeprom:	return EEPROM.read(USTR2EE(c_off)); )
 		default:	return *(char*)c_off;
 		}
@@ -150,16 +152,13 @@ class PACK ustr: protected ustrc
 {
 public:
 
+	static	ustr	ee	(ustr_t ee)		{ return ustr(EE2USTR(ee)); }
+	static	ustr	ptr	(const char* m)		{ return ustr(RAM2USTR(m)); }
+	static	ustr	rom	(const char* s)		{ return ustr(ROM2USTR(s)); }
+
 	ustr (ustr_t u)					{ c_off = u; }
 	ustr (const char* s = 0): ustrc()		{ c_off = (ustr_t)(long)s; }
 	const ustr& operator=	(const ustr& u)		{ c_off = u.c_off; return *this; }
-
-_UEE(	static	ustr	ee	(ustr_t ee)		{ return ustr(EE2USTR(ee)); } )
-#if 0
-	static	ustr	ptr	(ustr_t m) 		{ return ustr((const char*)m); }
-	static	ustr	ptr	(const char* m)		{ return ustr(m); }
-_UROM(	static	ustr	rom	(const char* s)		{ return ptr((ustr_t)s + USTR_OFFS_ROM); } )
-#endif
 
 	operator bool		() const		{ return !!c_off; }
 	operator ustr_t		() const		{ return c_off; }
@@ -171,7 +170,6 @@ _UROM(	static	ustr	rom	(const char* s)		{ return ptr((ustr_t)s + USTR_OFFS_ROM);
 	ustr_t	operator-	(const ustr& o) const	{ return c_off - o.c_off; }
 
 	ustrc&	operator*	()			{ return *this; }
-//	char	operator*	()			{ return (char)*this; }
 
 	ustr&	operator+=	(int d)			{ c_off += d; return *this; }
 	ustr&	operator-=	(int d)			{ return operator+=(-d); }

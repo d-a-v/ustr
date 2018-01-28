@@ -12,9 +12,9 @@
 #define RAM2USTR(x)		ustr(x)
 #define USTR2RAM(x)		(x)
 #define USTR_IS_RAM		((x) < 0x1000)
-#define FLASH2USTR(x)		ustr((x) + 0x1000)
-#define USTR2FLASH(x)		((x) - 0x1000)
-#define USTR_IS_FLASH(x)	((x) >= 0x1000 && (x) < 0xf000)
+#define ROM2USTR(x)		ustr((x) + 0x1000)
+#define USTR2ROM(x)		((x) - 0x1000)
+#define USTR_IS_ROM(x)		((x) >= 0x1000 && (x) < 0xf000)
 #define EE2USTR(x)		ustr((x) + 0xf000)
 #define USTR2EE(x)		((x) - 0xf000)
 #define USTR_IS_EE(x)		((x) >= 0xf000)
@@ -29,9 +29,9 @@ typedef uint16_t ustr_t;
 #define RAM2USTR(x)		ustr(x)
 #define USTR2RAM(x)		(x)
 #define USTR_IS_RAM		((x) < 0x40200000)
-#define FLASH2USTR(x)		ustr(x)
-#define USTR2FLASH(x)		(x)
-#define USTR_IS_FLASH(x)	((x) >= 0x40200000 && (x) < 0xf0000000)
+#define ROM2USTR(x)		ustr(x)
+#define USTR2ROM(x)		(x)
+#define USTR_IS_ROM(x)		((x) >= 0x40200000 && (x) < 0xf0000000)
 #define EE2USTR(x)		ustr((x) + 0xf0000000)
 #define USTR2EE(x)		((x) - 0xf0000000)
 #define USTR_IS_EE(x)		((x) >= 0xf0000000)
@@ -94,8 +94,8 @@ typedef unsigned long ustr_t;		// pointer always fit in a long
 #define PSTR(x) x
 #define USTR(x) ((char*)(x))
 #define PROGMEM
-#define STATICUSTR2(var,str) static const char var [] = str
-#define STATICUSTR(val) STATICUSTR2(__ ## val, #val)
+//#define STATICUSTR2(var,str) static const char var [] = str
+//#define STATICUSTR(val) STATICUSTR2(__ ## val, #val)
 #endif
 
 #endif // _USTRDEFS_H
