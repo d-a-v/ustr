@@ -162,6 +162,7 @@ public:
 	operator ustr_t		() const		{ return c_off; }
 	operator char*		() const		{ return (char*)c_off; }
 	operator const char*	() const		{ return (const char*)c_off; }
+	const char* c_str	() const		{ return (const char*)c_off; }
 
 	ustr	operator+	(int d) const		{ ustr copy = *this; return copy.operator+=(d); }
 	ustr	operator-	(int d) const		{ return operator+(-d); }
