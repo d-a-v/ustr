@@ -47,13 +47,11 @@ POSSIBILITY OF SUCH DAMAGE.
 #define ROM2USTR(x)		ustr(x)
 #define USTR2ROM(x)		(x)
 #define USTR_IS_ROM(x)		(0)
-#define STATICUSTR2(var,str)	static const char var [] = str
 #else
 #define _UROM(x...)		x
 #define STATICUSTR2(var,str)	static const char ustrom_##var [] PROGMEM = str; static const char* var = ROM2USTR(ustrom_##var)
 #endif
 
-#define STATICUSTR(val)		STATICUSTR2(__ ##val, #val)
 
 #ifndef ESP8266
 #define _UESP8266(x...)
@@ -215,7 +213,7 @@ ustr_t	ustrlen	(ucstr str);
 ustr	ustrcpy	(ustr d, ucstr s);
 ustr_t	ustrcmp	(ucstr s1, ucstr s2);
 
-#else // !__cplusplus
+#else
 
 typedef char* ustr;
 typedef const char* ucstr;
@@ -225,5 +223,10 @@ typedef const char* ucstr;
 #define ustrcmp strcmp
 
 #endif // !__cplusplus
+
+#ifndef STATICUSTR2
+#define STATICUSTR2(var,str)	static const char var [] = str
+#endif
+#define STATICUSTR(val)		STATICUSTR2(__ ##val, #val)
 
 #endif // __USTR_H

@@ -94,8 +94,6 @@ typedef unsigned long ustr_t;		// pointer always fit in a long
 #define PSTR(x) x
 #define USTR(x) ((char*)(x))
 #define PROGMEM
-//#define STATICUSTR2(var,str) static const char var [] = str
-//#define STATICUSTR(val) STATICUSTR2(__ ## val, #val)
 #endif
 
 #endif // _USTRDEFS_H
