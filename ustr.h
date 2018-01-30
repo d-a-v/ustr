@@ -47,6 +47,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #define ROM2USTR(x)		ustr(x)
 #define USTR2ROM(x)		(x)
 #define USTR_IS_ROM(x)		(0)
+#define USTR(x)			(x)
 #else
 #define _UROM(x...)		x
 #define STATICUSTR2(var,str)	static const char ustrom_##var [] PROGMEM = str; static const char* var = ROM2USTR(ustrom_##var)
@@ -59,7 +60,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #define _UESP8266(x...)		x
 #endif
 
-// generic 'char' equivalent identified by mapped address (ram, rom/flash, eeprom)
+// generic 'char* as pointer to char' equivalent identified by mapped address (ram, rom/flash, eeprom)
 class PACK ustrc
 {
 private:
@@ -146,6 +147,7 @@ public:
 
 class ucstr;
 
+// generic 'char* viewed as a string'
 class PACK ustr: protected ustrc
 {
 public:
@@ -178,7 +180,7 @@ public:
 	ustr	operator++	(int)			{ ustr copy = *this; operator++(); return copy; }
 	ustr	operator--	(int)			{ ustr copy = *this; operator--(); return copy; }
 	
-	ustr	operator[]	(int i)			{ return ustr(c_off + (ustr_t)i); }
+//	ustr	operator[]	(int i)			{ return ustr(c_off + (ustr_t)i); }
 	
 #define OP(op) \
 		bool operator op (const ustr& other) const { return c_off op other.c_off; } \
@@ -195,6 +197,7 @@ public:
 	type_e type		() const		{ return ustrc::type(); }
 };
 
+// generic 'const char* viewed as a string'
 class PACK ucstr: public ustr
 {
 private:
@@ -206,9 +209,9 @@ public:
 	operator const char*	() const		{ return (const char*)c_off; }
 };
 
-inline ustr::operator ucstr() { return ucstr(operator const char*()); }
+ustr::operator ucstr() { return ucstr(operator const char*()); }
 
-///XXX make templates with ustr*
+///XXX make templates with ustr?
 
 ustr_t	ustrlen	(ucstr str);
 ustr	ustrcpy	(ustr d, ucstr s);
@@ -229,5 +232,9 @@ typedef const char* ucstr;
 #define STATICUSTR2(var,str)	static const char var [] = str
 #endif
 #define STATICUSTR(val)		STATICUSTR2(__ ##val, #val)
+
+#ifndef ROM2USTR
+#define ROM2USTR(x)		(x)
+#endif
 
 #endif // __USTR_H

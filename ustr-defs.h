@@ -104,10 +104,14 @@ typedef unsigned long ustr_t;		// pointer always fit in a long
 #define PROGMEM
 #endif
 
-#ifdef ROM2USTR
+#if 0
+#ifndef USTR
 #define USTR(x)			ROM2USTR(PSTR(x))
 #else
+//#define ROM2USTR(x)		((char*)(x))
 #define USTR(x)			((char*)(x))
 #endif
+#endif
+
 
 #endif // _USTRDEFS_H
