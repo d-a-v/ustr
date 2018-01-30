@@ -8,16 +8,25 @@
 // mapping:
 // ram (max 0x1000=4096) | flash (max 0xE000=57344) | eeprom (max 0x1000=4096)
 // 0x0000         0x0fff | 0x1000            0xefff | 0xf000            0xffff
-// XXX is optimizable (bitmask?)
+// XXX is optimizable?
 #define RAM2USTR(x)		ustr(x)
 #define USTR2RAM(x)		(x)
 #define USTR_IS_RAM		((x) < 0x1000)
+#if 1
+#define ROM2USTR(x)		ustr((x) + 0x1000)
+#define USTR2ROM(x)		((x) - 0x1000)
+#define USTR_IS_ROM(x)		((x) >= 0x1000 && (x) < MAXSSCALAR(ustr_t))
+#define EE2USTR(x)		ustr((x) + MAXSSCALAR(ustr_t))
+#define USTR2EE(x)		((x) - MAXSSCALAR(ustr_t))
+#define USTR_IS_EE(x)		((x) >= MAXSSCALAR(ustr_t))
+#else
 #define ROM2USTR(x)		ustr((x) + 0x1000)
 #define USTR2ROM(x)		((x) - 0x1000)
 #define USTR_IS_ROM(x)		((x) >= 0x1000 && (x) < 0xf000)
 #define EE2USTR(x)		ustr((x) + 0xf000)
 #define USTR2EE(x)		((x) - 0xf000)
 #define USTR_IS_EE(x)		((x) >= 0xf000)
+#endif
 typedef uint16_t ustr_t;
 
 #elif ESP8266
@@ -25,13 +34,13 @@ typedef uint16_t ustr_t;
 // ram and flash addresses cast to uint32 do not overlap
 // mapping: https://github.com/esp8266/esp8266-wiki/wiki/Memory-Map
 // only eeprom has to be shifted
-// XXX is optimizable (0x4000000? bitmask?)
+// XXX is optimizable?
 #define RAM2USTR(x)		ustr(x)
 #define USTR2RAM(x)		(x)
-#define USTR_IS_RAM		((x) < 0x40200000)
+#define USTR_IS_RAM		((x) < 0x40000000)
 #define ROM2USTR(x)		ustr(x)
 #define USTR2ROM(x)		(x)
-#define USTR_IS_ROM(x)		((x) >= 0x40200000 && (x) < 0xf0000000)
+#define USTR_IS_ROM(x)		((x) >= 0x40000000 && (x) < 0xf0000000)
 #define EE2USTR(x)		ustr((x) + 0xf0000000)
 #define USTR2EE(x)		((x) - 0xf0000000)
 #define USTR_IS_EE(x)		((x) >= 0xf0000000)
