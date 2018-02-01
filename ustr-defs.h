@@ -97,7 +97,9 @@ typedef unsigned long ustr_t;		// pointer always fit in a long
 #define STR(x)			STR_HELPER(x)
 #endif
 
-#ifndef ARDUINO
+#ifdef ARDUINO
+#define USTR(x)			ROM2USTR(PSTR(x))
+#else
 // emulation
 #define F(x) x
 #define PSTR(x) x

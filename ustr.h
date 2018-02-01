@@ -44,13 +44,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef USTR_IS_ROM
 #define _UROM(x...)
-#define ROM2USTR(x)		ustr(x)
+#define ROM2USTR(x)		(x)
 #define USTR2ROM(x)		(x)
 #define USTR_IS_ROM(x)		(0)
 #define USTR(x)			(x)
 #else
 #define _UROM(x...)		x
 #define STATICUSTR2(var,str)	static const char ustrom_##var [] PROGMEM = str; static const char* var = ROM2USTR(ustrom_##var)
+#define USTR(x)			ROM2USTR(PSTR(x))
 #endif
 
 
@@ -192,7 +193,7 @@ public:
 	OP(<=)
 #undef OP
 
-	operator ucstr ();
+	operator ucstr () __attribute__((weak));
 
 	type_e type		() const		{ return ustrc::type(); }
 };
