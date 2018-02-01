@@ -167,6 +167,8 @@ public:
 	operator const char*	() const		{ return (const char*)c_off; }
 	const char* c_str	() const		{ return (const char*)c_off; }
 
+	ustr	operator+	(long unsigned d) const	{ ustr copy = *this; return copy.operator+=(d); }
+	ustr	operator-	(long unsigned d) const	{ return operator+(-d); }
 	ustr	operator+	(int d) const		{ ustr copy = *this; return copy.operator+=(d); }
 	ustr	operator-	(int d) const		{ return operator+(-d); }
 	ustr_t	operator-	(const ustr& o) const	{ return c_off - o.c_off; }
@@ -185,7 +187,8 @@ public:
 	
 #define OP(op) \
 		bool operator op (const ustr& other) const { return c_off op other.c_off; } \
-		bool operator op (const char* other) const { return (const char*)c_off op other; }
+		bool operator op (const char* other) const { return (const char*)c_off op other; } \
+		bool operator op (char* other) const { return (const char*)c_off op other; }
 	OP(==)
 	OP(>)
 	OP(>=)
