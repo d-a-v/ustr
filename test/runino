@@ -1,0 +1,28 @@
+#!/bin/sh
+
+ino=${1}
+inodir=${ino%/*}
+inoname=${ino##*/}
+pwd=$(cd ${0%/*}; pwd)
+
+valgrind="$(which valgrind)"
+
+if [ ! -r "${ino}" ]; then
+	echo "available ino:" ../examples/*/*.ino
+	exit 1
+fi
+
+posix=${pwd}/arduino2posix
+ustr=${pwd}/..
+uprintf=${pwd}/../../uprintf
+g++ -Wall -Wextra -std=gnu++11 -g -DARDUINO_EMU=1 \
+	-DUPRINTF_FLOAT=1 \
+	-I${posix} -I${ustr} -I${uprintf} -I${inodir}/../.. \
+	-include $posix/Arduino.h \
+	-include $ustr/ustr-cpy.cpp \
+	-include $ustr/ustr-len.cpp \
+	-include $ustr/ustr-cmp.cpp \
+	$posix/arduino.cpp  \
+	-include ${ino} \
+	-o ${inoname}.emu \
+&& ${valgrind} ./${inoname}.emu "$@"
