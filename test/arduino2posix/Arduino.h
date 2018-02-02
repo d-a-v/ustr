@@ -14,15 +14,16 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/select.h>
-#include "sys/time.h"
+#include <sys/time.h>
+
+#include <pins_arduino.h>
 
 class Stream
 {
 public:
-	virtual size_t write (char c) = 0;
+	virtual size_t write (uint8_t c) = 0;
 };
 
-#include <uprintf-arduino.h>
 
 inline void yell (const char* s, int l)
 {
@@ -46,6 +47,8 @@ public:
 	void reserve (unsigned int size) { return std::string::reserve(size); }
 };
 
+#include <aprintf.h>
+
 class HardwareSerial: public Stream
 {
 public:
@@ -54,7 +57,7 @@ public:
 	void begin (int) { }
 	bool available () { fd_set set; timeval z = { 0, 100000 }; FD_ZERO(&set); FD_SET(0, &set); return select(1, &set, NULL, NULL, &z) == 1;}
 	char read () { char c = getchar(); if (c == 3 /*^C*/) { fprintf(stderr, "\n\naborted by user\r\n"); exit(2); } if (c == '\r' || c == '\n') { yell(" ", 40); yell("\b", 40); } myputchar(c); return c; }
-	size_t write (char c) { return myputchar(c); }
+	size_t write (uint8_t c) { return myputchar(c); }
 
 	void print (char c) { printf("%c", c); }
 	void println (char c) { printf("%c\r\n", c); }
@@ -67,7 +70,6 @@ public:
 
 #define HIGH 1
 #define LOW 0
-#define LED_BUILTIN 13
 
 #define pinMode(a,b) do { (void)a; } while (0)
 #define digitalWrite(p,v) do { yell(" ", 10); uprintf(&Serial, "(pin %2i: out %i)", (p), !!(v)); yell("\b", 25); fflush(stdout); } while (0)
