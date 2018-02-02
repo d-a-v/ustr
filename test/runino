@@ -8,7 +8,10 @@ pwd=$(cd ${0%/*}; pwd)
 valgrind="$(which valgrind)"
 
 if [ ! -r "${ino}" ]; then
-	echo "available ino:" ../examples/*/*.ino
+	echo "available:"
+	for ino in ../examples/*/*.ino; do
+		echo "	./runino $ino"
+	done
 	exit 1
 fi
 
