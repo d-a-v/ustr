@@ -25,6 +25,7 @@ g++ -Wall -Wextra -std=gnu++11 -g -DARDUINO_EMU=1 \
 	-include $ustr/ustr-cpy.cpp \
 	-include $ustr/ustr-len.cpp \
 	-include $ustr/ustr-cmp.cpp \
+	-include $ustr/ustr-chr.cpp \
 	$posix/arduino.cpp  \
 	-include ${ino} \
 	-o ${inoname}.emu \

@@ -172,6 +172,7 @@ public:
 	ustr	operator+	(int d) const		{ ustr copy = *this; return copy.operator+=(d); }
 	ustr	operator-	(int d) const		{ return operator+(-d); }
 	ustr_t	operator-	(const ustr& o) const	{ return c_off - o.c_off; }
+	ustr_t	operator-	(const char* o) const	{ return c_off - (ustr_t)o; }
 
 	ustrc&	operator*	()			{ return *this; }
 
@@ -220,6 +221,7 @@ ustr::operator ucstr() { return ucstr(operator const char*()); }
 ustr_t	ustrlen	(ucstr str);
 ustr	ustrcpy	(ustr d, ucstr s);
 ustr_t	ustrcmp	(ucstr s1, ucstr s2);
+ucstr	ustrchr	(ucstr s, char c);
 
 #else
 
