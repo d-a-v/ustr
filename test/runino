@@ -2,18 +2,32 @@
 
 ino=${1}
 inodir=${ino%/*}
-inoname=${ino##*/}
 pwd=$(cd ${0%/*}; pwd)
-
 valgrind="$(which valgrind)"
 
 if [ ! -r "${ino}" ]; then
 	echo "available:"
+	i=0
 	for ino in ../examples/*/*.ino; do
-		echo "	./runino $ino"
+		i=$((i+1))
+		echo "	${i}: ./runino $ino"
 	done
-	exit 1
+	if [ ${i} = 1 ]; then
+		ans=1
+		echo "running ${ino}"
+	else
+		echo "choice?"
+		read ans
+	fi
+	i=0
+	for ino in ../examples/*/*.ino; do
+		i=$((i+1))
+		[ ${i} = "$ans" ] && break
+	done
+	[ -r "$ino" ] || exit 1
 fi
+
+inoname=${ino##*/}
 
 posix=${pwd}/arduino2posix
 ustr=${pwd}/..
