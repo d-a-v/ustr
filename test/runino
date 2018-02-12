@@ -29,4 +29,5 @@ g++ -Wall -Wextra -std=gnu++11 -g -DARDUINO_EMU=1 \
 	$posix/arduino.cpp  \
 	-include ${ino} \
 	-o ${inoname}.emu \
+	-lcurses \
 && ${valgrind} ./${inoname}.emu "$@"

@@ -16,6 +16,8 @@
 #include <sys/select.h>
 #include <sys/time.h>
 
+#include <curses.h> // getch()
+
 #include <pins_arduino.h>
 
 class Stream
@@ -47,16 +49,14 @@ public:
 	void reserve (unsigned int size) { return std::string::reserve(size); }
 };
 
-#include <aprintf.h>
-
 class HardwareSerial: public Stream
 {
 public:
-	HardwareSerial () { system("stty raw -echo"); }
-	~HardwareSerial () { system("stty sane"); }
+	HardwareSerial () { initscr(); timeout(0); }
+	~HardwareSerial () { endwin();  }
 	void begin (int) { }
-	bool available () { fd_set set; timeval z = { 0, 100000 }; FD_ZERO(&set); FD_SET(0, &set); return select(1, &set, NULL, NULL, &z) == 1;}
-	char read () { char c = getchar(); if (c == 3 /*^C*/) { fprintf(stderr, "\n\naborted by user\r\n"); exit(2); } if (c == '\r' || c == '\n') { yell(" ", 40); yell("\b", 40); } myputchar(c); return c; }
+	bool available () { int c = getch(); if (c == ERR) { usleep(100000); return false; } ungetch(c); return true; }
+	int read () { if (!available()) return -1; unsigned char ret = getch(); printf("\b \b"); fflush(stdout); return ret; }
 	size_t write (uint8_t c) { return myputchar(c); }
 
 	void print (char c) { printf("%c", c); }
@@ -72,9 +72,9 @@ public:
 #define LOW 0
 
 #define pinMode(a,b) do { (void)a; } while (0)
-#define digitalWrite(p,v) do { yell(" ", 10); uprintf(&Serial, "(pin %2i: out %i)", (p), !!(v)); yell("\b", 25); fflush(stdout); } while (0)
+#define digitalWrite(p,v) do { yell(" ", 10); printf("(pin %2i: out %i)", (p), !!(v)); yell("\b", 25); fflush(stdout); } while (0)
 #define digitalRead(p) ({ struct timeval t; gettimeofday(&t, NULL); (t.tv_sec + p) & 1; })
-#define analogWrite(p,v)  do { yell(" ", 10); uprintf(&Serial, "(pin %2i: pwm %i)", (p), !!(v)); yell("\b", 25); fflush(stdout); } while (0)
+#define analogWrite(p,v)  do { yell(" ", 10); printf("(pin %2i: pwm %i)", (p), !!(v)); yell("\b", 25); fflush(stdout); } while (0)
 
 extern HardwareSerial Serial;
 extern struct timeval tstart;
