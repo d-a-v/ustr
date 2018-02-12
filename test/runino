@@ -1,7 +1,7 @@
 #!/bin/sh
 
+[ "$CC" = "" ] && CC=g++
 ino=${1}
-inodir=${ino%/*}
 pwd=$(cd ${0%/*}; pwd)
 valgrind="$(which valgrind)"
 
@@ -28,11 +28,13 @@ if [ ! -r "${ino}" ]; then
 fi
 
 inoname=${ino##*/}
+inodir=${ino%/*}
 
 posix=${pwd}/arduino2posix
 ustr=${pwd}/..
 uprintf=${pwd}/../../uprintf
-g++ -Wall -Wextra -std=gnu++11 -g -DARDUINO_EMU=1 \
+set -x
+$CC -Wall -Wextra -std=gnu++11 -g -DARDUINO_EMU=1 \
 	-DUPRINTF_FLOAT=1 \
 	-I${posix} -I${ustr} -I${uprintf} -I${inodir}/../.. \
 	-include $posix/Arduino.h \
@@ -45,3 +47,6 @@ g++ -Wall -Wextra -std=gnu++11 -g -DARDUINO_EMU=1 \
 	-o ${inoname}.emu \
 	-lcurses \
 && ${valgrind} ./${inoname}.emu "$@"
+set +x
+stty sane
+echo
