@@ -6,6 +6,7 @@ HardwareSerial Serial;
 
 #include <math.h>
 #include <string.h>
+#include <curses.h>
 
 void delay (int ms)
 {
@@ -33,8 +34,8 @@ int myputchar (int c)
 	case 127: return 0;
 	default:;
 	}
-	putchar(c);
-	fflush(stdout);
+	//putchar(c); fflush(stdout);
+	addch(c);
 	return 1;
 }
 

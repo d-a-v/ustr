@@ -30,7 +30,7 @@ public:
 inline void yell (const char* s, int l)
 {
 	for (int i = 0; i < l; i++)
-		printf("%s", s);
+		printw("%s", s);
 }
 
 int myputchar (int c);
@@ -56,25 +56,25 @@ public:
 	~HardwareSerial () { endwin();  }
 	void begin (int) { }
 	bool available () { int c = getch(); if (c == ERR) { usleep(100000); return false; } ungetch(c); return true; }
-	int read () { if (!available()) return -1; unsigned char ret = getch(); printf("\b \b"); fflush(stdout); return ret; }
+	int read () { if (!available()) return -1; unsigned char ret = getch(); return ret; }
 	size_t write (uint8_t c) { return myputchar(c); }
 
-	void print (char c) { printf("%c", c); }
-	void println (char c) { printf("%c\r\n", c); }
-	void print (const char* s) { printf("%s", s); }
-	void println (const char* s) { printf("%s\r\n", s); }
-	void print (const String& s) { printf("%s", s.c_str()); }
-	void println (const String& s) { printf("%s\r\n", s.c_str()); }
-	void println () { printf("\r\n"); }
+	void print (char c) { printw("%c", c); }
+	void println (char c) { printw("%c\r\n", c); }
+	void print (const char* s) { printw("%s", s); }
+	void println (const char* s) { printw("%s\r\n", s); }
+	void print (const String& s) { printw("%s", s.c_str()); }
+	void println (const String& s) { printw("%s\r\n", s.c_str()); }
+	void println () { printw("\r\n"); }
 };
 
 #define HIGH 1
 #define LOW 0
 
 #define pinMode(a,b) do { (void)a; } while (0)
-#define digitalWrite(p,v) do { yell(" ", 10); printf("(pin %2i: out %i)", (p), !!(v)); yell("\b", 25); fflush(stdout); } while (0)
+#define digitalWrite(p,v) do { yell(" ", 10); printw("(pin %2i: out %i)", (p), !!(v)); yell("\b", 25); } while (0)
 #define digitalRead(p) ({ struct timeval t; gettimeofday(&t, NULL); (t.tv_sec + p) & 1; })
-#define analogWrite(p,v)  do { yell(" ", 10); printf("(pin %2i: pwm %i)", (p), !!(v)); yell("\b", 25); fflush(stdout); } while (0)
+#define analogWrite(p,v)  do { yell(" ", 10); printw("(pin %2i: pwm %i)", (p), !!(v)); yell("\b", 25); } while (0)
 
 extern HardwareSerial Serial;
 extern struct timeval tstart;
