@@ -54,7 +54,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #define USTR(x)			ROM2USTR(PSTR(x))
 #endif
 
-
 #ifndef ESP8266
 #define _UESP8266(x...)
 #else
@@ -219,8 +218,6 @@ public:
 
 ustr::operator ucstr() { return ucstr(operator const char*()); }
 
-///XXX make templates with ustr?
-
 ustr_t	ustrlen	(ucstr str);
 ustr	ustrcpy	(ustr d, ucstr s);
 ustr_t	ustrcmp	(ucstr s1, ucstr s2);
@@ -236,6 +233,11 @@ typedef const char* ucstr;
 #define ustrcmp strcmp
 
 #endif // !__cplusplus
+
+#define uNULL		((const char*)0)
+#define uzstrlen(x)	((x)? ustrlen(x): 0)
+#define uzstrcpy(d,s)	({ if (s) ustrcpy(d, s); else *(d) = 0; (d); })
+#define USTRLOCAL(x,ux) char x [uzstrlen(ux) + 1]; uzstrcpy(x, ux)
 
 #ifndef STATICUSTR2
 #define STATICUSTR2(var,str)	static const char var [] = str
