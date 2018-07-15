@@ -1,7 +1,7 @@
-ustrc		KEYWORD1
-ustr		KEYWORD1
-ucstr		KEYWORD1
+ustrc	KEYWORD1
+ustr	KEYWORD1
+ucstr	KEYWORD1
 
-ptr		KEYWORD2
-ee		KEYWORD2
-rom		KEYWORD2
+ptr	KEYWORD2
+ee	KEYWORD2
+rom	KEYWORD2
