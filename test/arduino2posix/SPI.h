@@ -13,21 +13,30 @@
 class SPISettings
 {
 public:
-	SPISettings (uint32_t clock = 0, uint8_t bitOrder = MSBFIRST, uint8_t dataMode = SPI_MODE0)
-	{
-		(void)clock;
-		(void)bitOrder;
-		(void)dataMode;
-	}
+    SPISettings(uint32_t clock = 0, uint8_t bitOrder = MSBFIRST, uint8_t dataMode = SPI_MODE0)
+    {
+        (void)clock;
+        (void)bitOrder;
+        (void)dataMode;
+    }
 };
 
 class _SPI
 {
 public:
-	void begin () { fprintf(stderr, "(fake spi)\r\n"); }
-	void beginTransaction (const SPISettings& s) { (void)s; }
-	uint8_t transfer (uint8_t) { return 0xaa; }
-	void endTransaction () { }
+    void begin()
+    {
+        fprintf(stderr, "(fake spi)\r\n");
+    }
+    void beginTransaction(const SPISettings& s)
+    {
+        (void)s;
+    }
+    uint8_t transfer(uint8_t)
+    {
+        return 0xaa;
+    }
+    void endTransaction() { }
 } SPI;
 
 #endif // __SPI_H

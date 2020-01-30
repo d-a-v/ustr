@@ -73,6 +73,11 @@ typedef unsigned long ustr_t;		// pointer always fit in a long
 #define typeof __typeof__
 #endif
 
+#ifndef UINT_T
+#define UINT_T
+typedef unsigned int uint_t;
+#endif
+
 #ifndef MAXSCALAR
 #define MAXSCALAR(type,sz_bit)	((type)((((((type)1)<<((sz_bit)-1))-1)<<1)+1))
 #define MAXUSCALAR(type)	MAXSCALAR(type,(sizeof(type)<<3))
@@ -81,13 +86,16 @@ typedef unsigned long ustr_t;		// pointer always fit in a long
 #endif
 
 #ifndef MAX
-#define MAX(a,b) ({ typeof(a) _a = (a); typeof(b) _b = b; _b > _a? _b: _a; })
-#define MIN(a,b) ({ typeof(c) _c = (c); typeof(d) _d = d; _d < _c? _d: _c; })
+#define MAX(a,b) ({ __typeof__(a) _a = (a); __typeof__(b) _b = b; _b > _a? _b: _a; })
+#endif
+
+#ifndef MIN
+#define MIN(c,d) ({ __typeof__(c) _c = (c); __typeof__(d) _d = d; _d < _c? _d: _c; })
 #endif
 
 #ifndef SHL
 // SHiftLeft - returns z << b, b can be < 0
-#define SHL(z,b)		({ typeof(z) _z = (z); typeof(b) _b = (b); _b < 0? _z >> -_b: _z << _b; })
+#define SHL(z,b)		({ __typeof__(z) _z = (z); typeof(b) _b = (b); _b < 0? _z >> -_b: _z << _b; })
 // SHiftRight - returns z >> b, b can be < 0
 #define SHR(z,b)		(SHL((z),-(b)))
 #endif
